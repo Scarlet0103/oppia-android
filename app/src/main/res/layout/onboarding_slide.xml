@@ -6,55 +6,62 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.onboarding.OnboardingSlideViewModel" />
+      type="org.oppia.android.app.onboarding.OnboardingSlideViewModel" />
   </data>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <ImageView
-      android:id="@+id/slide_image_view"
-      android:layout_width="0dp"
-      android:layout_height="0dp"
-      android:src="@{viewModel.slideImage}"
-      android:contentDescription="@{viewModel.contentDescription}"
-      app:layout_constraintDimensionRatio="V,4:4"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
 
-    <TextView
-      android:id="@+id/slide_title_text_view"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:fontFamily="sans-serif-medium"
-      android:layout_marginStart="28dp"
-      android:layout_marginTop="16dp"
-      android:layout_marginEnd="28dp"
-      android:gravity="center_horizontal"
-      android:text="@{viewModel.title}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="24sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/slide_image_view" />
+      <ImageView
+        android:id="@+id/slide_image_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:importantForAccessibility="no"
+        android:src="@{viewModel.slideImage}"
+        app:layout_constraintDimensionRatio="5:4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-      android:id="@+id/slide_description_text_view"
-      android:layout_width="0dp"
-      android:layout_height="wrap_content"
-      android:fontFamily="sans-serif"
-      android:layout_marginTop="16dp"
-      android:layout_marginStart="48dp"
-      android:layout_marginEnd="48dp"
-      android:gravity="center_horizontal"
-      android:text="@{viewModel.description}"
-      android:textColor="@color/oppiaPrimaryText"
-      android:textSize="16sp"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/slide_title_text_view" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      <TextView
+        android:id="@+id/slide_title_text_view"
+        style="@style/Heading1"
+        android:layout_width="0dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:text="@{viewModel.title}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/slide_image_view" />
+
+      <TextView
+        android:id="@+id/slide_description_text_view"
+        style="@style/Subtitle1"
+        android:layout_width="0dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:minLines="2"
+        android:text="@{viewModel.description}"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/slide_title_text_view" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </ScrollView>
 </layout>

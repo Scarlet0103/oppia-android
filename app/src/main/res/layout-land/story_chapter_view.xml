@@ -6,11 +6,15 @@
 
     <import type="android.view.View" />
 
-    <import type="org.oppia.app.model.ChapterPlayState" />
+    <import type="org.oppia.android.app.model.ChapterPlayState" />
+
+    <variable
+      name="htmlContent"
+      type="CharSequence" />
 
     <variable
       name="viewModel"
-      type="org.oppia.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
+      type="org.oppia.android.app.story.storyitemviewmodel.StoryChapterSummaryViewModel" />
   </data>
 
   <FrameLayout
@@ -18,6 +22,7 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
+      android:id="@+id/story_chapter_card"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginStart="76dp"
@@ -27,9 +32,7 @@
       android:clickable="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES}"
       android:onClick="@{(v) -> viewModel.onExplorationClicked()}"
       app:cardCornerRadius="4dp"
-      app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/elevation_4dp : @dimen/elevation_0dp}"
-      app:strokeColor="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @color/colorPrimary : @color/chapterCardGreyBorder}"
-      app:strokeWidth="2dp">
+      app:cardElevation="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? @dimen/story_chapter_card_playable_state_elevation : @dimen/story_chapter_card_not_playable_state_elevation}">
 
       <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -41,7 +44,6 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:minHeight="116dp"
-          android:orientation="vertical"
           android:padding="8dp"
           app:layout_constraintBottom_toBottomOf="parent"
           app:layout_constraintEnd_toEndOf="parent"
@@ -73,10 +75,8 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp"
-            android:ellipsize="end"
             android:fontFamily="sans-serif"
-            android:maxLines="3"
-            android:text="@{viewModel.summary}"
+            android:text="@{viewModel.chapterSummary.chapterPlayState != ChapterPlayState.NOT_PLAYABLE_MISSING_PREREQUISITES ? htmlContent : @string/chapter_prerequisite_title_label(viewModel.index, viewModel.missingPrerequisiteChapter.name)}"
             android:textColor="@color/oppiaPrimaryText"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"

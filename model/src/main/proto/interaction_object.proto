@@ -2,10 +2,11 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "org.oppia.app.model";
+option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // Structure for any interaction object
+// https://github.com/oppia/oppia/blob/1d85e6dacf055c9138f7f4d32e6702dfaf2f943c/extensions/objects/models/objects.py#L17
 message InteractionObject {
   oneof object_type {
     string normalized_string = 1;
@@ -18,12 +19,23 @@ message InteractionObject {
     // wrapped into a new message.
     StringList set_of_html_string = 7;
     Fraction fraction = 8;
+    ListOfSetsOfHtmlStrings list_of_sets_of_html_string = 9;
+    ImageWithRegions image_with_regions = 10;
+    ClickOnImage click_on_image = 11;
+    RatioExpression ratio_expression = 12;
   }
 }
 
 // Structure containing a string list.
 message StringList {
   repeated string html = 1;
+}
+
+// Structure containing a ratio object for eg - [1,2,3] for 1:2:3.
+message RatioExpression {
+  // List of components in a ratio. It's expected that list should have more than
+  // 1 element.
+  repeated uint32 ratio_component = 1;
 }
 
 // Structure for a number with units object.
@@ -49,3 +61,54 @@ message Fraction {
   int32 denominator = 4;
 }
 
+// Structure for a ListOfString object.
+message ListOfSetsOfHtmlStrings {
+  repeated StringList set_of_html_strings = 1;
+}
+
+// Structure for 2-Dimensional Point.
+message Point2d {
+  float x = 1;
+  float y = 2;
+}
+
+// An image overlaid with labeled regions.
+message ImageWithRegions {
+  // A string that represents a filepath which will be prefixed with '[exploration_id]/assets.
+  string image_path = 1;
+
+  // A region of an image, including its shape and coordinates.
+  message LabeledRegion {
+    // The name for the region.
+    string label = 1;
+
+    message Region {
+      // Represents the different Region Types.
+      enum RegionType {
+        REGION_TYPE_UNSPECIFIED = 0;
+        RECTANGLE = 1;
+      }
+
+      // A shape value for a particular region.
+      RegionType region_type = 1;
+
+      // A rectangle normalized so that the coordinates are within the range [0,1].
+      message NormalizedRectangle2d {
+        // Origin is top-left, increasing x is to the right, increasing y is down.
+        Point2d upper_left = 1;
+        Point2d lower_right = 2;
+      }
+
+      NormalizedRectangle2d area = 2;
+    }
+
+    Region region = 2;
+  }
+  repeated LabeledRegion label_regions = 2;
+}
+
+// A click on an image and the clicked regions.
+message ClickOnImage {
+  Point2d click_position = 1;
+  repeated string clicked_regions = 2;
+}

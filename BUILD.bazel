@@ -1,0 +1,19 @@
+# TODO(#1532): Rename file to 'BUILD' post-Gradle.
+# TODO(#1640): Move binary manifest to top-level package post-Gradle.
+android_binary(
+    name = "oppia",
+    custom_package = "org.oppia.android",
+    enable_data_binding = True,
+    manifest = "//app:src/main/AndroidManifest.xml",
+    manifest_values = {
+        "applicationId": "org.oppia.android",
+        "versionCode": "0",
+        "versionName": "0.1-alpha",
+        "minSdkVersion": "19",
+        "targetSdkVersion": "29",
+    },
+    multidex = "native",  # TODO(#1875): Re-enable legacy for optimized release builds.
+    deps = [
+        "//app",
+    ],
+)

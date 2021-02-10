@@ -3,15 +3,16 @@ syntax = "proto3";
 package model;
 
 import "subtitled_html.proto";
+import "subtitled_unicode.proto";
 import "interaction_object.proto";
 import "translation.proto";
 import "voiceover.proto";
 
-option java_package = "org.oppia.app.model";
+option java_package = "org.oppia.android.app.model";
 option java_multiple_files = true;
 
 // Structure for a single exploration.
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeExploration.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeExploration.kt
 message Exploration {
   // The ID of the exploration.
   string id = 1;
@@ -28,7 +29,7 @@ message Exploration {
 }
 
 // Structure for a param change.
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeParamChange.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeParamChange.kt
 message ParamChange {
   string generator_id = 1;
   string name = 2;
@@ -36,18 +37,19 @@ message ParamChange {
 }
 
 // Structure for a param spec.
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeParamSpec.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeParamSpec.kt
 message ParamSpec {
   ObjectType obj_type = 1;
 }
 
 // Supported object types for parameters.
 enum ObjectType {
-  UNICODE_STRING = 0;
+  OBJECT_TYPE_UNSPECIFIED = 0;
+  UNICODE_STRING = 1;
 }
 
 // Structure for a single state
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeState.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeState.kt
 message State {
   // The name of the State.
   string name = 1;
@@ -74,21 +76,48 @@ message ParamChangeCustomizationArgs {
 }
 
 // Structure for a single interaction
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeInteractionInstance.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeInteractionInstance.kt
 message Interaction {
   string id = 1;
   repeated AnswerGroup answer_groups = 2;
   Solution solution = 3;
   repeated AnswerGroup confirmed_unclassified_answers = 4;
-  Hint hint = 5;
+  repeated Hint hint = 5;
   Outcome default_outcome = 6;
   // Mapping from the name of a customization arg to the default interaction
   // object of the customization arg
-  map<string, InteractionObject> customization_args = 7;
+  map<string, SchemaObject> customization_args = 7;
+}
+
+// Structure for schema objects. See https://github.com/oppia/oppia/blob/fcb44f8/schema_utils.py#L50 for context.
+message SchemaObject {
+  oneof object_type {
+    bool bool_value = 1;
+    CustomSchemaValue custom_schema_value = 2;
+    string normalized_string = 3;
+    int32 signed_int = 4;
+    SchemaObjectList schema_object_list = 5;
+    SubtitledHtml subtitled_html = 6;
+    SubtitledUnicode subtitled_unicode = 7;
+  }
+}
+
+// Structure for a list of schema object
+message SchemaObjectList {
+  repeated SchemaObject schema_object = 1;
+}
+
+// Structure which supports custom schemas
+message CustomSchemaValue {
+  oneof custom_type {
+    ImageWithRegions image_with_regions = 1;
+    SubtitledHtml subtitled_html = 2;
+    SubtitledUnicode subtitled_unicode = 3;
+  }
 }
 
 // Structure for a single answer group
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeAnswerGroup.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeAnswerGroup.kt
 message AnswerGroup {
   string tagged_skill_misconception_id = 1;
   Outcome outcome = 2;
@@ -103,23 +132,42 @@ message TrainingData {
 }
 
 // Structure for a single solution
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeSolution.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeSolution.kt
 message Solution {
   string interaction_id = 1;
   // Flag that is true if correct_answer is the only correct answer of the question.
   bool answer_is_exclusive = 2;
-  string correct_answer = 3;
+  // correct_answer of the State.
+  CorrectAnswer correct_answer = 3;
+  // Core explanation to the correct answer.
   SubtitledHtml explanation = 4;
+  // To check if the solution was revealed or not by the learner.
+  bool solution_is_revealed = 5;
+}
+
+// Structure for a Correct answer in Solution
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeSolution.kt
+message CorrectAnswer {
+  int32 denominator = 1;
+  int32 numerator = 2;
+  int32 whole_number = 3;
+  bool is_negative = 4;
+  string correct_answer = 5;
 }
 
 // Structure for a single hint
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeHint.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeHint.kt
 message Hint {
+  // Hint data.
   SubtitledHtml hint_content = 1;
+  // To check if the hint was revealed or not
+  bool hint_is_revealed = 2;
+  // The current state that is display to the user.
+  State state = 3;
 }
 
 // Structure for a single outcome
-// Maps from: data/src/main/java/org/oppia/data/backends/gae/model/GaeOutcome.kt
+// Maps from: data/src/main/java/org/oppia/android/android/data/backends/gae/model/GaeOutcome.kt
 message Outcome {
   string dest_state_name = 1;
   string refresher_exploration_id = 2;
@@ -175,6 +223,8 @@ message PendingState {
   // A list of previous wrong answers that led back to this state, and Oppia's responses. These responses are in the
   // order the learner submitted them.
   repeated AnswerAndResponse wrong_answer = 1;
+  // A list of hints.
+  repeated Hint hint = 2;
 }
 
 // Corresponds to an exploration state that the learner has previous completed.
@@ -194,7 +244,13 @@ message UserAnswer {
     string html_answer = 2;
     // A plaintext representation of the answer.
     string plain_answer = 3;
+    // A list of HTML textual representation of the answer.
+    ListOfSetsOfHtmlStrings list_of_html_answers = 4;
   }
+  // An accessible version of the corresponding plain answer. It will be used to read out the
+  // answer when there is a screen-reader enabled. Also when this is value is not initialized and
+  // if the screen-reader is enabled in that case the plain answer/html answer would be read out.
+  string content_description = 5;
 }
 
 message AnswerAndResponse {
@@ -233,5 +289,28 @@ message AnswerOutcome {
     // Indicates that the learner needs to play the specified exploration ID to refresh missing topics and then return
     // to restart the current exploration.
     string refresher_exploration_id = 7;
+  }
+}
+
+// A structure corresponding to the index of a hint or solution in a state. This structure is set up
+// to properly account for variable numbers of hints, for cases when only a solution or no solution
+// exists, and for when there are no hints or solutions.
+message HelpIndex {
+  // This type is uninitialized in cases when no index is currently available (either because a hint
+  // or solution hasn't yet been triggered, or because there are none to trigger).
+  oneof index_type {
+    // Indicates this help index corresponds to the index of a hint within the hint list of a state.
+    int32 hint_index = 1;
+
+    // Indicates this help index corresponds to the solution of a state. The boolean value here has
+    // no importance and is always 'true'.
+    bool show_solution = 2;
+
+    // Indicates that everything available has been revealed. Note that this is different than the
+    // case when there are no hints or solutions to trigger, even though the resulting behavior may
+    // be different. This case specifically indicates that all hints and the solution, if present,
+    // have been revealed and there's no other help to provide. The boolean value here has no
+    // importance and is always 'true'.
+    bool everything_revealed = 3;
   }
 }

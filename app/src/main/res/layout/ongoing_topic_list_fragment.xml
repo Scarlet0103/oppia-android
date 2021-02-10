@@ -6,7 +6,7 @@
 
     <variable
       name="viewModel"
-      type="org.oppia.app.ongoingtopiclist.OngoingTopicListViewModel" />
+      type="org.oppia.android.app.ongoingtopiclist.OngoingTopicListViewModel" />
   </data>
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/topic_app_bar_layout"
+      android:id="@+id/ongoing_topic_list_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -30,10 +30,10 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/topics_in_progress"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -43,7 +43,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/topic_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/ongoing_topic_list_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ongoing_topic_list"
@@ -51,8 +51,12 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="@dimen/bottom_white_space"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="144dp"
         android:scrollbars="none"
+        android:tag="@string/ongoing_recycler_view_tag"
         app:data="@{viewModel.ongoingTopicListViewModelLiveData}" />
 
       <View

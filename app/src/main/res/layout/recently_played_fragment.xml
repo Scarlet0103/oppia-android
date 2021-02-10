@@ -2,20 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <data>
-
-    <variable
-      name="viewModel"
-      type="org.oppia.app.home.recentlyplayed.RecentlyPlayedViewModel" />
-  </data>
-
   <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-      android:id="@+id/story_list_app_bar_layout"
+      android:id="@+id/reading_list_app_bar_layout"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -30,10 +23,10 @@
         android:background="?attr/colorPrimary"
         android:fontFamily="sans-serif"
         android:minHeight="?attr/actionBarSize"
-        android:textSize="20sp"
         app:navigationContentDescription="@string/go_to_previous_page"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:title="@string/recently_played_activity"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"
         app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -43,7 +36,7 @@
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@id/story_list_app_bar_layout">
+      app:layout_constraintTop_toBottomOf="@id/reading_list_app_bar_layout">
 
       <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ongoing_story_recycler_view"
@@ -52,10 +45,8 @@
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingTop="8dp"
-        android:paddingBottom="172dp"
-        android:scrollbars="none"
-        app:data="@{viewModel.ongoingStoryLiveData}"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        android:paddingBottom="168dp"
+        android:scrollbars="none" />
 
       <View
         android:id="@+id/recently_played__shadow_view"
